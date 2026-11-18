@@ -1,16 +1,24 @@
 # Strip light box: design notes
 
 A 3D-printed box that the phone lies on, camera down, so every strip is photographed
-under the phone's own torch at a fixed distance and position. Built by
-`build_strip_box.py` (run through the Fusion MCP; it writes STLs to `export/`). Edit the constants
-at the top of the script and re-run to change it.
+under the phone's own torch at a fixed distance and position. Built by the Fusion 360 script
+`build_strip_box/build_strip_box.py`, which writes the STLs to `export/`. Edit the constants
+at the top of the script and re-run to change it (see "Editing in Fusion 360" below).
+
+There are two lids, one per phone. **Both are made for the phone with its case on**: the case's raised
+camera surround drops into the lid's hole, so the case never has to come off.
+
+| Lid | Phone |
+|---|---|
+| `strip_box_lid_black.stl` | iPhone 17 Pro Max / 18 Pro Max, in its case (measured on a ZAGG Luxe Snap case) |
+| `strip_box_lid_iphone14_black.stl` | iPhone 14, in a case with a raised ring round the camera |
 
 The saved Fusion design is **"Pool Strip Reader Box - Multi Phone"** in Admin Project. Run the script
 with that document active and it is rebuilt in place; save it to make a new version. With any other
 document active, the script opens a new untitled design and leaves the saved one alone.
 
 Only the lid depends on the phone. Each phone is one entry in `PHONES` at the top of the script and
-gets its own lid and fit test ring; the body, tray, calibration slide and stick-on parts are shared.
+gets its own lid; the body, tray, calibration slide and stick-on parts are shared.
 
 ## Inputs
 | What | Value | Source |
@@ -84,11 +92,11 @@ taken to be the ultra-wide.
   point is then at (7.2, -10.8), 21 mm from the strip's centre line (further than on the 17 Pro Max)
   and about 7 mm short of the calibration chart, much as before. The lens is 14 mm to one side of the
   strip, about 11 degrees off straight down. None of this depends on the case.
-- **The hole was sized by fit ring, not by measurement.** What drops into the lid is the case's ring
+- **The hole was sized with printed test rings, not by measurement.** What drops into the lid is the case's ring
   round the camera plateau. The hole is 38.6 mm square with 13.5 mm corners, centred on the plateau:
   the plateau (34.75) plus a ring 1.5 mm wide on every side, a little play, and the usual 0.3 mm
-  clearance. The ring itself was never measured; the two-notch fit ring with this exact hole dropped
-  in on the real phone (see "Fit ring results"). How much play it has was not reported.
+  clearance. The ring itself was never measured; a test ring with this exact hole dropped in on the
+  real phone (see "How the lid holes were sized"). How much play it has was not reported.
 - **So the phone is always pushed into the same corner:** slide it towards its own top-left (looking
   at its back) until the ring stops against the hole. It then sits in the same place every time,
   whatever the play, and the app's remembered rings and the calibration are set from that position.
@@ -105,37 +113,24 @@ taken to be the ultra-wide.
 To add a phone: copy an entry in `PHONES`, fill in its measurements, and choose `at` so the mirror
 point (printed by the script) is 20 mm or more from the strip's centre line and at y of -10 or less.
 
-## Fit ring results
-- v1 (5 mm corners all round): fits fine, but light shows through at the two corners nearest the top of
-  the phone. Re-measured from the ruler photo, the bump is about 10 mm radius there (it follows the
-  phone's own corner) and about 5-6 mm at the other two, where v1 was snug.
-- v2: top corners opened to 9 mm, kept just under the measured 10 so they cannot bind. The ring now has a
-  notch on the edge that goes towards the top of the phone. Lid hole changed to match.
+## How the lid holes were sized
+Before printing each lid, a thin ring with just the lid's hole was printed and tried on the phone in its
+case. Those rings are no longer kept; what they showed is built into the lids:
+- 17 / 18 Pro Max: 5 mm corners all round let light in at the two corners nearest the top of the phone
+  (the camera surround follows the phone's own corner there, about 10 mm). The hole now has 9 mm corners
+  there and 5 mm at the other two.
+- iPhone 14: 11 mm corners left a gap; 13.5 mm corners dropped in on the real phone in its case
+  (17 November 2026). The hole is 38.6 mm square with 13.5 mm corners.
 
-iPhone 14 lid:
-- v1 (38.6 mm square, 11 mm corners), tried on an iPhone 15 in a case, not yet on the iPhone 14: fits
-  nicely and the size is right, but the corners leave a little gap. A ring that follows the plateau
-  would have corners of about 12.5 to 13 mm, which makes that gap about 1 mm across the diagonal.
-- v2: two rings to try, same size. One notch: 12.5 mm corners (about 0.4 mm left at the corners if the
-  ring's are 12.8). Two notches: 13.5 mm corners (about nothing left, so it might not have dropped in).
-  The corner that matters for light is the one nearest the phone's own corner, where a
-  square-cornered hole can reach past the case's rounded corner; the other three are under the case.
-- **Result, 17 November 2026: the two-notch ring (13.5 mm corners) works on the iPhone 14 in its case**
-  (reported by the phone's owner through Duncan; no detail on play or on the one-notch ring). `hole_r`
-  is now 13.5 and the lid was re-exported the same day: `strip_box_lid_iphone14_black.stl` has a
-  38.6 mm square hole with 13.5 mm corners (checked on the exported file). Nothing else changed: the
-  other nine STLs are byte-for-byte what they were, and both rings stay in `PHONES` as printed
-  (`rings`), so they can be exported again.
+To check a new phone the same way, print just the lid, or temporarily cut a thin plate from the
+lid's `hole_shape` in the script.
 
 ## Parts
 | File | Colour | Print |
 |---|---|---|
-| `strip_box_fit_test_ring_v2.stl` | any | 17 Pro Max in its case. Flat; print first and try it on the phone, notch towards the top of the phone |
-| `strip_box_fit_test_ring_iphone14_v2_12.5mm_one_notch.stl` | any | iPhone 14 in its case, looser corners (12.5 mm). No longer needed: the two-notch ring fitted |
-| `strip_box_fit_test_ring_iphone14_v2_13.5mm_two_notches.stl` | any | iPhone 14 in its case, 13.5 mm corners. Fitted on the real phone; this is the hole the lid has |
 | `strip_box_body_black.stl` | black | upright as exported, no supports (one 60 mm bridge over the tray opening) |
-| `strip_box_lid_black.stl` | black | 17 Pro Max in its case. Flipped, flat top on the bed, locating ring up, no supports |
-| `strip_box_lid_iphone14_black.stl` | black | iPhone 14 in its case. Printed the same way. Ready to print: hole matches the two-notch ring (re-exported 17 November 2026; a copy from before that date has 12.5 mm corners) |
+| `strip_box_lid_black.stl` | black | iPhone 17 / 18 Pro Max in its case. Flipped, flat top on the bed, locating ring up, no supports |
+| `strip_box_lid_iphone14_black.stl` | black | iPhone 14 in its case. Printed the same way. Ready to print (a copy exported before 17 November 2026 has 12.5 mm corners) |
 | `strip_box_tray_white.stl` | white | flat as exported, no supports. Has the firmer click arms (v2); replaces the earlier trays, the body stays |
 | `strip_box_calibration_slide_white.stl` | white | flat as exported, no supports |
 | `strip_box_slide_holder.stl` | any | flat as exported (wall face down), no supports |
@@ -165,7 +160,6 @@ capture). From 0.6.0: Calibrate colours reads the whole chart from one picture o
 Calibration has been tested only against a simulated camera feed showing a shade photo of the label.
 
 ## Not yet verified
-- Fit of the bump hole on the real phone (hence the test ring).
 - Whether Safari lets the web app select the ultra-wide lens and switch the torch on with it.
 - Whether the white tray is enough to stop the whites blowing out. If the app reports "too bright",
   add white paper to the floor beside the tray or to the walls; if too dark, the reverse.
@@ -175,8 +169,8 @@ Calibration has been tested only against a simulated camera feed showing a shade
   of the tray; a body printed with a wider opening gives a softer click, a narrower one a firmer click.
   The first click tray felt looser than its numbers suggested, so the printed gap may be wider than 0.3.
 
-For the iPhone 14 lid (the fit ring has been tried on the phone; the lid itself has not been printed):
-- Where the hole sits. The fit ring showed the hole's size and corners suit the case's camera ring. It
+For the iPhone 14 lid (a test ring has been tried on the phone; the lid itself has not been printed):
+- Where the hole sits. The test ring showed the hole's size and corners suit the case's camera ring. It
   could not show that the ring is centred on the plateau, which is what puts the lens at (0, -10). If
   it is off, the app's rings and the calibration still follow the phone, as they are set from wherever
   it actually sits.
@@ -186,3 +180,45 @@ For the iPhone 14 lid (the fit ring has been tried on the phone; the lid itself 
 - Whether Safari on the iPhone 14 offers the ultra-wide lens with the torch.
 - Colours. A different phone needs its own calibration with the slide, and calibrations are kept per
   person in the app, not per phone.
+
+## Editing in Fusion 360
+The STLs are meshes, fine for printing but awkward to edit. The script is the real source: it rebuilds
+every part from the numbers at its top, so a change is made by editing a number and running it again.
+
+**Load the script (once):**
+1. Get the whole `enclosure/` folder onto the computer that runs Fusion (clone or download the repo).
+   Keep `build_strip_box/` inside `enclosure/`: the script writes its STLs to `enclosure/export/`.
+2. In Fusion, open the **Design** workspace and choose **Utilities > Add-Ins > Scripts and Add-Ins**
+   (shortcut Shift+S).
+3. On the **Scripts** tab click **+** (or the green plus next to "My Scripts") and choose
+   **Script or add-in from device**, then pick the `enclosure/build_strip_box` folder. It contains
+   `build_strip_box.py` and `build_strip_box.manifest`; Fusion expects the folder and the .py to share a
+   name, so do not rename one without the other.
+4. `build_strip_box` now appears in the list.
+
+**Run it:** select it and click **Run**. It builds every part into a new untitled design (or rebuilds
+the saved design "Pool Strip Reader Box - Multi Phone" if that is the open document), shows the chosen
+phone sitting on its lid, overwrites the STLs in `enclosure/export/`, and prints sizes, volumes and the
+torch mirror point for each phone in the **Text Commands** window (File > View > Show Text Commands).
+Save the design if you want to keep it in Fusion; the STLs are already written either way.
+
+**Edit it:** select it and click **Edit** to open the script in Fusion's code editor (VS Code), or open
+the .py in any editor. After a change, run it again.
+- Whole-box sizes (clearance, tray click, slide grip, bottle clip) are the named constants under the
+  `PHONES` block, each with a comment saying what it does.
+- `SHOW` picks which phone and lid appear on the box in Fusion. Every lid is exported whichever you pick.
+
+**Change or add a phone:** only the lid changes, so the body, tray and the rest stay as printed.
+1. Copy one of the entries in `PHONES` and give it a new `key`, `name` and `lid` file name.
+2. Measure the phone **in its case**: `phone` (width, length, thickness), and the raised camera area that
+   will drop into the hole: `bump` (across, along the phone), `bump_at` (its left and top edges from the
+   case's left and top edges, looking at the back), and the hole's corner radii in `hole_r`. Apple's
+   "Dimensional Drawings" PDFs give the bare phone and lens positions; the case adds to them.
+3. Fill in `uw` (ultra-wide lens), `lenses` and `flash`, measured from the centre of the bump, and
+   `proud` (how far the lens glass sits below the surface that rests on the lid).
+4. Set `SHOW` to the new key, run the script and look at the printed torch mirror point. Adjust `at` until
+   it is 20 mm or more from the strip's centre line and at y of -10 or less (see "Where a phone sits").
+5. Print the new lid, try the phone in it, and calibrate colours in the app (Settings > Light box) with
+   that phone, since each camera sees the chart differently.
+
+The script needs Fusion's own Python (it imports `adsk`), so it cannot be run outside Fusion.

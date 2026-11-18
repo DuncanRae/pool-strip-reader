@@ -1,0 +1,10 @@
+{
+	"autodeskProduct": "Fusion",
+	"type": "script",
+	"author": "",
+	"description": {
+		"": "Builds the Pool Strip Reader light box and exports its STLs to enclosure/export"
+	},
+	"supportedOS": "windows|mac",
+	"editEnabled": true
+}

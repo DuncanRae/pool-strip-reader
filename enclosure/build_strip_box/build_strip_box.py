@@ -1,10 +1,10 @@
-# Fusion script: builds the pool test-strip light box. Run it through the Fusion MCP (or
-# Utilities > Scripts); it builds the printable parts plus reference bodies and exports STLs
-# next to this file. It rebuilds the saved design if that is the active document, otherwise
+# Fusion script: builds the pool test-strip light box. Run it from Utilities > Scripts and
+# Add-Ins (or through the Fusion MCP); it builds the printable parts plus reference bodies and
+# exports STLs to ../export. It rebuilds the saved design if that is the active document, otherwise
 # it opens a new untitled one (see SAVED_NAME). To change a dimension, edit the block below
 # and run it again.
 #
-# Only the lid (and its fit test ring) depends on the phone: add a phone to PHONES to get
+# Only the lid depends on the phone: add a phone to PHONES to get
 # another lid. The body, tray, calibration slide and stick-on parts are shared.
 #
 # Frame (mm): origin on the table under the centre of the first phone's camera bump.
@@ -16,8 +16,6 @@ import adsk.core, adsk.fusion, os
 # bump     raised camera area that drops into the lid's hole: across / along the phone
 # bump_at  the bump's left and top edges, from the phone's left and top edges (looking at its back)
 # hole_r   hole corner radius: the two corners nearest the top of the phone, then the other two
-# ring     the fit test ring's file: it has the lid's own hole
-# rings    in place of `ring`, several rings to try, each (corner radii, file); the lid still has hole_r
 # uw, lenses, flash   centres, from the centre of the bump: x to the right looking at the back,
 #          y towards the bottom of the phone
 # proud    how far the lens glass stands out of the back that rests on the lid
@@ -27,12 +25,12 @@ PHONES = [
          # Measured: photo phone-back-with-ruler.HEIC plus the owner's calipers.
          phone=(82.0, 167.0, 13.0), phone_r=10.0,
          bump=(73.0, 45.0), bump_at=(4.5, 4.0), bump_r=6.0,
-         hole_r=(9.0, 5.0),            # the bump's own are ~10 and ~5-6; fit ring v1 was snug at 5
+         hole_r=(9.0, 5.0),            # the bump's own are ~10 and ~5-6; a test ring was snug at 5
          # Which lens is the ultra-wide was never confirmed on the phone. The first real scan had the
          # torch's mirror patch at about (0, -10), which is where the top-left lens puts it, so that one.
          uw=(-24.1, -9.7), lenses=[(-6.6, -0.2), (-23.6, 9.2)], flash=(24.5, -9.7),
          proud=3.0, at=(0.0, 0.0),
-         lid='strip_box_lid_black.stl', ring='strip_box_fit_test_ring_v2.stl'),
+         lid='strip_box_lid_black.stl'),
     dict(key='iphone14', name='iPhone 14 in a case with a camera ring',
          # The phone: Apple's "iPhone 14 Dimensional Drawings" (2022-09-21), detail D, measured from
          # the phone's top-left corner: 71.52 x 146.71 x 7.80; plateau 1.15 to 35.90 both ways (34.75
@@ -45,15 +43,10 @@ PHONES = [
          # sure to go in. The case's outside size and the lens height are estimates and only move the
          # reference bodies. Replace them with measurements when there are any.
          phone=(75.0, 150.5, 10.5), phone_r=14.0,
-         bump=(38.0, 38.0), bump_at=(1.3, 1.3), bump_r=13.5,   # corners as the fit ring found them (reference body only)
-         # Fit ring v1 (11 mm corners) was tried on an iPhone 15 in a case: the size was right but the
-         # corners showed a gap. A ring that follows the plateau has corners of about 12.5-13, so two
-         # rings were printed, 12.5 (one notch) and 13.5 (two notches), to use the tightest that drops in
-         # on the real phone. The two-notch ring dropped in on the iPhone 14 in its case (reported
-         # 2026-11-17), so the lid's hole has 13.5 mm corners. Both rings are kept as they were printed.
+         bump=(38.0, 38.0), bump_at=(1.3, 1.3), bump_r=13.5,   # corners as the test ring found them (reference body only)
+         # Hole corners found with printed test rings: 13.5 mm dropped in on the iPhone 14 in its case
+         # (2026-11-17); 11 mm left a gap at the corners.
          hole_r=(13.5, 13.5),
-         rings=[((12.5, 12.5), 'strip_box_fit_test_ring_iphone14_v2_12.5mm_one_notch.stl'),
-                ((13.5, 13.5), 'strip_box_fit_test_ring_iphone14_v2_13.5mm_two_notches.stl')],
          uw=(-6.645, -6.645), lenses=[(6.105, 6.105)], flash=(7.775, -8.315),
          proud=1.4, at=(6.65, -3.35),  # puts the ultra-wide lens at (0, -10)
          lid='strip_box_lid_iphone14_black.stl'),
@@ -97,7 +90,7 @@ LID_Z0 = STRIP_Z + LENS_TO_STRIP - (LID_T - LENS_PROUD)   # lid underside = wall
 LID_Z1 = LID_Z0 + LID_T
 PAD_ZONE = 4 * PAD + 3 * PAD_GAP               # 29 mm
 TIP_Y = -PAD_ZONE / 2                          # pads centred under the lenses
-EXPORT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'export')
+EXPORT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'export')   # enclosure/export
 
 
 # The saved design is "Pool Strip Reader Box - Multi Phone" (Admin Project). When that document is
@@ -197,30 +190,12 @@ def run(_context: str):
     cut(body, box(TRAY_X0 - SLIDE, TRAY_X1 + SLIDE, iy1 - 0.1, Y1 + 0.1, FLOOR, FLOOR + OPEN_H))
 
     # ---- Lids (black), one per phone: plate the phone lies on, hole for its camera bump, locating ring ----
-    # ---- Fit test rings: print one first to check the bump hole against the phone ----
-    lids, rings = {}, {}
-    ring_y, ring_x = Y0 - 45, None
+    lids = {}
     for p in PHONES:
         ring = cut(box(ix0 + 0.25, ix1 - 0.25, iy0 + 0.25, iy1 - 0.25, LID_Z0 - 4, LID_Z0 + 0.1),
                    box(ix0 + 1.85, ix1 - 1.85, iy0 + 1.85, iy1 - 1.85, LID_Z0 - 5, LID_Z0 + 1))
         lid = add(rbox(X0, X1, Y0, Y1, LID_Z0, LID_Z1, 3), ring)
         lids[p['key']] = cut(lid, hole_shape(p, p['at'][0], p['at'][1], LID_Z0 - 6, LID_Z1 + 1))
-        hx, hy = p['bump'][0] / 2 + FIT, p['bump'][1] / 2 + FIT
-        rings[p['key']] = []
-        # A phone has one ring with the lid's own hole (ring), or several to try (rings), each with its
-        # own corner radii; those are told apart by their notches: one on the first, two on the next...
-        for n, (hole_r, file) in enumerate(p.get('rings') or [(p['hole_r'], p['ring'])]):
-            ring_x = 0.0 if ring_x is None else ring_x + hx + 10    # rings side by side in front of the box
-            test = cut(rbox(ring_x - hx - 4, ring_x + hx + 4, ring_y - hy - 4, ring_y + hy + 4, 0, LID_T, 3),
-                       hole_shape(dict(p, hole_r=hole_r), ring_x, ring_y, -1, LID_T + 1))
-            # The notches are on the edge that goes towards the top of the phone.
-            for k in range(n + 1):
-                nx = ring_x + (k - n / 2) * 8
-                cut(test, box(nx - 2, nx + 2, ring_y - hy - 4.1, ring_y - hy - 2.6, -1, LID_T + 1))
-            label = f'Fit test ring: {p["name"]}' if n == 0 else \
-                f'Fit test ring, {hole_r[0]:g} mm corners ({n + 1} notches): {p["name"]}'
-            rings[p['key']].append((label, test, file))
-            ring_x += hx + 4
 
     # ---- Tray (white): slides in from the near side; the strip lies in its channel ----
     tray = rbox(TRAY_X0, TRAY_X1, tray_end, Y1, FLOOR, STRIP_Z, 1.5)
@@ -324,9 +299,9 @@ def run(_context: str):
     parts = [part('Body (black)', body), part('Strip tray (white)', tray),
              part('Calibration slide (white)', slide), part('Slide holder', holder), part('Bottle clip', clip)]
     for p in PHONES:
-        for label, made, file in [(f'Lid (black): {p["name"]}', lids[p['key']], p['lid'])] + rings[p['key']]:
-            parts.append(part(label, made, visible=p['key'] == SHOW))
-            files[label] = file
+        label = f'Lid (black): {p["name"]}'
+        parts.append(part(label, lids[p['key']], visible=p['key'] == SHOW))
+        files[label] = p['lid']
     # The two stick-on parts are exported lying on the face that goes against the wall, ready to print.
     flat = {'Slide holder': part('PRINT slide holder', laid_flat(holder, X1, -1), visible=False)[1],
             'Bottle clip': part('PRINT bottle clip', laid_flat(clip, X0, 1), visible=False)[1]}
