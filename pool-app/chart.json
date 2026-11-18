@@ -1,0 +1,272 @@
+{
+  "product": "HTH Early Warning Test Strips (4-way), lot 531804",
+  "basis": "the bottle's label photographed flat in open shade, every swatch measured against the label's own white",
+  "padOrder": [
+    "fc",
+    "ta",
+    "ph",
+    "cya"
+  ],
+  "whiteAdjust": [
+    1,
+    1,
+    1
+  ],
+  "params": {
+    "fc": {
+      "label": "Free chlorine",
+      "short": "Chlorine",
+      "unit": "ppm",
+      "ideal": [
+        1,
+        3
+      ],
+      "step": 0.5,
+      "swatches": [
+        {
+          "value": 0,
+          "lab": [
+            96.7,
+            -3.7,
+            15.4
+          ],
+          "css": "rgb(251,247,216)"
+        },
+        {
+          "value": 0.5,
+          "lab": [
+            93.3,
+            3.5,
+            4.7
+          ],
+          "css": "rgb(247,233,227)"
+        },
+        {
+          "value": 1,
+          "lab": [
+            92,
+            6.3,
+            -1.4
+          ],
+          "css": "rgb(243,228,235)"
+        },
+        {
+          "value": 3,
+          "lab": [
+            75,
+            23.4,
+            -11.8
+          ],
+          "css": "rgb(218,170,207)"
+        },
+        {
+          "value": 5,
+          "lab": [
+            58.8,
+            35.6,
+            -15.9
+          ],
+          "css": "rgb(190,118,170)"
+        },
+        {
+          "value": 10,
+          "lab": [
+            49.6,
+            37.5,
+            -18.7
+          ],
+          "css": "rgb(165,93,150)"
+        }
+      ]
+    },
+    "ta": {
+      "label": "Total alkalinity",
+      "short": "Alkalinity",
+      "unit": "ppm",
+      "ideal": [
+        80,
+        120
+      ],
+      "step": 10,
+      "swatches": [
+        {
+          "value": 0,
+          "lab": [
+            73.7,
+            -0.4,
+            62.6
+          ],
+          "css": "rgb(212,178,58)"
+        },
+        {
+          "value": 40,
+          "lab": [
+            68.1,
+            -11.4,
+            53.9
+          ],
+          "css": "rgb(175,170,63)"
+        },
+        {
+          "value": 80,
+          "lab": [
+            57.5,
+            -22.1,
+            25.4
+          ],
+          "css": "rgb(114,148,93)"
+        },
+        {
+          "value": 120,
+          "lab": [
+            49.8,
+            -24.2,
+            4.6
+          ],
+          "css": "rgb(70,129,110)"
+        },
+        {
+          "value": 180,
+          "lab": [
+            44.9,
+            -19.8,
+            -14.1
+          ],
+          "css": "rgb(33,116,129)"
+        },
+        {
+          "value": 240,
+          "lab": [
+            43.4,
+            -16.7,
+            -16.7
+          ],
+          "css": "rgb(35,111,130)"
+        }
+      ]
+    },
+    "ph": {
+      "label": "pH",
+      "short": "pH",
+      "unit": "",
+      "ideal": [
+        7.2,
+        7.6
+      ],
+      "step": 0.1,
+      "swatches": [
+        {
+          "value": 6.2,
+          "lab": [
+            67.1,
+            28.7,
+            64.2
+          ],
+          "css": "rgb(235,141,39)"
+        },
+        {
+          "value": 6.8,
+          "lab": [
+            61.2,
+            40.8,
+            37.8
+          ],
+          "css": "rgb(228,116,83)"
+        },
+        {
+          "value": 7.2,
+          "lab": [
+            58.9,
+            48.6,
+            34.9
+          ],
+          "css": "rgb(230,102,83)"
+        },
+        {
+          "value": 7.6,
+          "lab": [
+            56.5,
+            49,
+            32.9
+          ],
+          "css": "rgb(223,95,81)"
+        },
+        {
+          "value": 8,
+          "lab": [
+            51.4,
+            51.7,
+            28
+          ],
+          "css": "rgb(209,78,78)"
+        },
+        {
+          "value": 8.4,
+          "lab": [
+            54.5,
+            54.7,
+            29.5
+          ],
+          "css": "rgb(223,83,83)"
+        }
+      ]
+    },
+    "cya": {
+      "label": "Stabiliser (CYA)",
+      "short": "Stabiliser",
+      "unit": "ppm",
+      "ideal": [
+        30,
+        50
+      ],
+      "step": 10,
+      "swatches": [
+        {
+          "value": 0,
+          "lab": [
+            59.1,
+            30.3,
+            57.7
+          ],
+          "css": "rgb(211,119,35)"
+        },
+        {
+          "value": 50,
+          "lab": [
+            53.3,
+            47.6,
+            39.1
+          ],
+          "css": "rgb(212,88,62)"
+        },
+        {
+          "value": 100,
+          "lab": [
+            47.1,
+            61.2,
+            22.1
+          ],
+          "css": "rgb(206,51,78)"
+        },
+        {
+          "value": 150,
+          "lab": [
+            42.3,
+            56.6,
+            -1.7
+          ],
+          "css": "rgb(179,48,105)"
+        },
+        {
+          "value": 250,
+          "lab": [
+            37.4,
+            54.5,
+            -13.4
+          ],
+          "css": "rgb(157,38,111)"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pool-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["pool-app/scripts/preview.py", "--demo"],
+      "port": 8745
+    },
+    {
+      "name": "pool-preview-login",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["pool-app/scripts/preview.py", "--demo", "--login"],
+      "port": 8745
+    }
+  ]
+}

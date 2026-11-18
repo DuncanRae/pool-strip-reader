@@ -1,0 +1,18 @@
+# Runtime data and secrets
+**/data/
+**/options.json
+**/.session-key
+**/tls/
+*.pem
+*.key
+*.sqlite3*
+
+# Generated
+dist/
+**/__pycache__/
+*.pyc
+.DS_Store
+
+# Phone photos carry GPS location
+*.HEIC
+*.heic
