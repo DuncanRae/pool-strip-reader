@@ -2,6 +2,22 @@
 
 Photograph an HTH Early Warning test strip and get an exact, ordered dosing plan for the pool. Runs as a Home Assistant app (sidebar via ingress, plus an optional password-protected HTTPS port for a Home Screen PWA or Cloudflare Tunnel), the same hosting pattern as 43 Links Power.
 
+## Install
+
+**Home Assistant:** Settings → Apps → App store → ⋮ → Repositories, add
+`https://github.com/DuncanRae/pool-strip-reader`, close the dialog, then find **Pool Strip Reader** in
+the store and install it. It downloads a prebuilt image (amd64 or aarch64). The app's Documentation
+tab covers the options.
+
+**Docker without Home Assistant:** copy `docker-compose.yml` and `.env.example` from this repository,
+rename `.env.example` to `.env`, set a password of 12 or more characters and the address people will
+open, then run `docker compose up -d`. The image is `ghcr.io/duncanrae/pool-strip-reader` (amd64 and
+arm64). It serves plain HTTP on port 8745: put it behind an HTTPS reverse proxy, because phones only
+allow the camera on https:// pages. Data lives in `./pool-data`. The Home Assistant sensors,
+reminders and weather are not available this way.
+
+**The light box** is optional: the STLs are in `enclosure/export/`, see `enclosure/design-notes.md`.
+
 ## Layout
 
 | Path | What it is |
@@ -12,9 +28,13 @@ Photograph an HTH Early Warning test strip and get an exact, ordered dosing plan
 | `pool-app/tls_manager.py` | Standalone HTTPS and Let's Encrypt (copied from 43 Links Power) |
 | `pool-app/chart.json` | Reference colours of the bottle chart (generated, see below) |
 | `pool-app/public/` | The phone interface: `app.js`, `strip.js` (strip finding and reading), `color.js` |
-| `pool-app/ha-app/` | Home Assistant manifest, Dockerfile, launcher, docs |
+| `pool_strip_reader/` | What the Home Assistant app store reads: `config.yaml` (version, options, image), `DOCS.md`, `CHANGELOG.md`, icon and logo |
+| `repository.yaml` | Makes this repository a Home Assistant app store repository |
+| `pool-app/ha-app/` | Dockerfile and launcher (`ha_run.py`: Home Assistant mode under the Supervisor, plain Docker mode otherwise) |
+| `docker-compose.yml`, `.env.example` | Running it with Docker alone |
+| `.github/workflows/release.yml` | Builds and publishes the images when a GitHub release is published |
 | `pool-app/scripts/` | Packaging, local preview, chart derivation |
-| `IMG_079*.HEIC` | The original bottle and strip photos |
+| `IMG_079*.HEIC` | The original bottle and strip photos (kept locally only: they carry GPS) |
 
 ## Light box
 
@@ -65,11 +85,15 @@ One owner, plus anyone the owner adds under **Settings → People**. Row 1 of `s
 
 No dependencies to install: Python standard library and plain browser JavaScript.
 
-## Deploy
+## Release
 
-1. Bump the version in `server.py` (`APP_VERSION`), `ha-app/config.yaml`, `ha-app/Dockerfile` and `package.json`. The page's scripts and styles are served under `v/<APP_VERSION>/` (the server writes the version into `index.html`, and the scripts import each other relatively), so nothing in `public/` is edited per release. This matters because Cloudflare gives browsers a four-hour cache time for `.js` and `.css` whatever the app says: in 0.6.0 a phone kept the previous `strip.js` next to the new `app.js`, the import failed, and the app sat on its loading screen.
-2. `python3 pool-app/scripts/package_ha.py` builds `dist/pool_strip_reader`.
-3. Mount `smb://192.168.0.5/addons`, copy `dist/pool_strip_reader` to it, then in Home Assistant: Settings → Apps → App store → ⋮ → Check for updates → install or update. Never copy anything into the app's `/data`.
+1. Bump the version in `pool-app/server.py` (`APP_VERSION`), `pool_strip_reader/config.yaml`, `pool-app/ha-app/Dockerfile` and `pool-app/package.json`, and add a section to `pool_strip_reader/CHANGELOG.md`. `package_ha.py` refuses to build if the four versions differ. The page's scripts and styles are served under `v/<APP_VERSION>/` (the server writes the version into `index.html`, and the scripts import each other relatively), so nothing in `public/` is edited per release. This matters because Cloudflare gives browsers a four-hour cache time for `.js` and `.css` whatever the app says: in 0.6.0 a phone kept the previous `strip.js` next to the new `app.js`, the import failed, and the app sat on its loading screen.
+2. Commit and push, then publish a GitHub release whose tag is `v<version>`, for example `gh release create v0.9.2 --title 0.9.2 --notes "..."`.
+3. The **Release** workflow runs the tests, builds `pool-strip-reader-amd64` and `pool-strip-reader-aarch64` (what the store's `image:` line points at) and a combined multi-arch `pool-strip-reader:<version>` and `:latest` for plain Docker, all on `ghcr.io/duncanrae/`. It fails if the tag does not match `config.yaml`. Home Assistant installs then offer the update under Settings → Updates.
+
+Pushing a new `config.yaml` version to `main` makes Home Assistant offer that version straight away, so publish the release right after the push (or push and release together). To rerun a release, use Actions → Release → Run workflow with the tag.
+
+**Local install from source** (no registry): `python3 pool-app/scripts/package_ha.py` builds `dist/pool_strip_reader` without the `image:` line, so Home Assistant builds it on the box. Copy that folder to the HA `addons` share, then Settings → Apps → App store → ⋮ → Check for updates → install or update. Never copy anything into the app's `/data`. A local install (`local_pool_strip_reader`) and the store install are separate apps with separate data.
 
 ## How the colour reading works
 

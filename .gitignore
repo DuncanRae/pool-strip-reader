@@ -16,3 +16,7 @@ dist/
 # Phone photos carry GPS location
 *.HEIC
 *.heic
+
+# Docker run data and settings
+.env
+pool-data/

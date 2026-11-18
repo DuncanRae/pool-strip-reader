@@ -2,6 +2,7 @@
 
 ## 0.9.1
 
+- **Published for installing from GitHub.** Add `https://github.com/DuncanRae/pool-strip-reader` as an app store repository in Home Assistant, or run the same image with Docker alone (see the repository's README). Under Docker alone it needs a password and its address, and the Home Assistant sensors, reminders and weather are off.
 - **First launch on an iPhone or iPad shows how to put the app on the Home Screen**, before the sign-in: tap Share (or the three dots beside the address bar, then Share), Add to Home Screen, Add, then open Pool from its icon and sign in there. It comes first because the app on the Home Screen keeps its own sign-in, so the pool details and the light-box calibration are then done in the app itself and not in Safari.
 - It is asked once per browser, has **Carry on in the browser instead**, and is not shown when the app is already open from the Home Screen or inside the Home Assistant sidebar.
 - **Settings → About → Put Pool on the Home Screen** shows the same steps later, for anyone still using it in Safari.

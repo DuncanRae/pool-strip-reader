@@ -1,0 +1,17 @@
+# Pool Strip Reader without Home Assistant. Copy .env.example to .env, fill it in, then:
+#   docker compose up -d
+# Put it behind an HTTPS reverse proxy (Caddy, Traefik, nginx, a Cloudflare Tunnel...): phones
+# only allow the camera on https:// pages, and the sign-in cookie is Secure on https.
+services:
+  pool:
+    image: ghcr.io/duncanrae/pool-strip-reader:latest
+    restart: unless-stopped
+    ports:
+      - "8745:8745"
+    environment:
+      APP_PASSWORD: ${POOL_PASSWORD:?Set POOL_PASSWORD in .env (12+ characters)}
+      APP_ORIGIN: ${POOL_ORIGIN:?Set POOL_ORIGIN in .env, the address people open, e.g. https://pool.example.com}
+      APP_USERNAME: ${POOL_USERNAME:-owner}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./pool-data:/data

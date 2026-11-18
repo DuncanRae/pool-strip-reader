@@ -1,6 +1,10 @@
 name: Pool Strip Reader
 version: "0.9.1"
 slug: pool_strip_reader
+url: https://github.com/DuncanRae/pool-strip-reader
+# Prebuilt images from .github/workflows/release.yml. package_ha.py removes this line for a
+# local build from source.
+image: ghcr.io/duncanrae/pool-strip-reader-{arch}
 description: Photograph a pool test strip, get exact dosing, and publish pool sensors
 arch:
   - aarch64
